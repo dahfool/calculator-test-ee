@@ -9,20 +9,35 @@ enum Ikey {
   secondNumber = 'secondNumber',
 }
 
+const initialState = {
+  firstNumber: '',
+  secondNumber: '',
+  operation: '',
+  result: '',
+}
+
 export const Calculator: React.FC = memo(() => {
-  const [state, setState] = useState({
-    firstNumber: '',
-    secondNumber: '',
-    operation: '',
-    result: 0,
-  })
+  const [state, setState] = useState(initialState)
   const [key, setKey] = useState<Ikey>(Ikey.firstNumber)
 
   const updateNumber = (num: string) => {
+    const val = state[key] + num
     setState({
       ...state,
-      [key]: state[key] + num,
+      [key]: val,
+      result: val,
     })
+  }
+
+  const backspace = () => {
+    const val = state[key].slice(0, -1)
+    if (state[key]) {
+      setState({
+        ...state,
+        [key]: val,
+        result: val,
+      })
+    }
   }
 
   const setOperation = (op: string) => {
@@ -39,10 +54,17 @@ export const Calculator: React.FC = memo(() => {
     }
   }
 
+  const clear = () => {
+    setState({
+      ...initialState,
+    })
+    setKey(Ikey.firstNumber)
+  }
+
   const calculateResult = () => {
     let result = 0
-    const firstNumber = parseInt(state.firstNumber)
-    const secondNumber = parseInt(state.secondNumber)
+    const firstNumber = parseFloat(state.firstNumber)
+    const secondNumber = parseFloat(state.secondNumber)
     switch (state.operation) {
       case '+':
         result = firstNumber + secondNumber
@@ -61,12 +83,11 @@ export const Calculator: React.FC = memo(() => {
     }
 
     setState({
-      ...state,
-      result,
+      ...initialState,
+      result: result.toString(),
     })
+    setKey(Ikey.firstNumber)
   }
-
-  console.log(state)
 
   return (
     <div className='calculator m-auto mt-4'>
@@ -83,12 +104,16 @@ export const Calculator: React.FC = memo(() => {
                   <button
                     className='btn btn-secondary btn-lg btn-number mb-3'
                     data-testid='delete'
+                    onClick={backspace}
                   >
                     &larr;
                   </button>
                 </div>
                 <div className='col pe-0'>
-                  <button className='btn btn-secondary btn-lg w-100 mb-3'>
+                  <button
+                    className='btn btn-secondary btn-lg w-100 mb-3'
+                    onClick={clear}
+                  >
                     clear
                   </button>
                 </div>
