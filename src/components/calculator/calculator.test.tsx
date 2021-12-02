@@ -1,9 +1,9 @@
 import React from 'react'
 import { render, fireEvent } from '@testing-library/react'
-import App from './App'
+import { Calculator } from './'
 
 const setup = () => {
-  const utils = render(<App />)
+  const utils = render(<Calculator />)
 
   return {
     ...utils,
