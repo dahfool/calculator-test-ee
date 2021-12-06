@@ -1,6 +1,6 @@
 import React, { memo } from 'react'
 
-const operations = ['x', '-', '+', '/', '=']
+export const operations = ['*', '-', '+', '/', '=']
 
 interface Props {
   setOperation: (x: string) => void
@@ -15,7 +15,7 @@ export const Operations: React.FC<Props> = memo(({ setOperation }) => {
             className='btn btn-secondary btn-lg btn-number mb-3'
             onClick={() => setOperation(operation)}
           >
-            {operation}
+            {operation === '*' ? 'x' : operation}
           </button>
         </div>
       ))}

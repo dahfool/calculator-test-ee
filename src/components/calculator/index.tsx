@@ -1,8 +1,8 @@
-import React, { memo, useState } from 'react'
+import React, { memo, useState, useEffect } from 'react'
 import './calculator.styles.css'
-import { Numbers } from './numbers'
+import { numbers, Numbers } from './numbers'
 import { Display } from './display'
-import { Operations } from './operations'
+import { operations, Operations } from './operations'
 
 enum Ikey {
   firstNumber = 'firstNumber',
@@ -19,6 +19,28 @@ const initialState = {
 export const Calculator: React.FC = memo(() => {
   const [state, setState] = useState(initialState)
   const [key, setKey] = useState<Ikey>(Ikey.firstNumber)
+
+  const handleKeyDown = (event: KeyboardEvent) => {
+    const key = event.key
+
+    if (numbers.includes(key)) {
+      updateNumber(key)
+    } else if (operations.includes(key)) {
+      setOperation(key)
+    } else if (key === 'Backspace') {
+      backspace()
+    } else if (key === 'Escape') {
+      clear()
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  })
 
   const updateNumber = (num: string) => {
     const val = state[key] + num
@@ -72,7 +94,7 @@ export const Calculator: React.FC = memo(() => {
       case '-':
         result = firstNumber - secondNumber
         break
-      case 'x':
+      case '*':
         result = firstNumber * secondNumber
         break
       case '/':
